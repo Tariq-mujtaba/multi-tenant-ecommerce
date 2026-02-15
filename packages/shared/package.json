@@ -1,15 +1,15 @@
 {
-  "name": "@my/shared",
+  "name": "@repo/shared",
   "version": "1.0.0",
-  "private": "false",
+  "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "dev": "tsc -b --watch"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.24.0"
+  "devDependencies": {
+    "typescript": "^5"
+  },
+  "license": "ISC"
 }

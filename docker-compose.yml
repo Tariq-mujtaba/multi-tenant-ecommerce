@@ -1,0 +1,63 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URI=${DATABASE_URI}
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  # Development services with hot-reload
+  api-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      target: deps
+    command: sh -c "pnpm --filter @repo/shared build && pnpm --filter @repo/api dev"
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DATABASE_URI=${DATABASE_URI}
+    volumes:
+      - ./apps/api/src:/app/apps/api/src
+      - ./packages/shared/src:/app/packages/shared/src
+    restart: unless-stopped
+
+  web-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      target: deps
+    command: sh -c "pnpm --filter @repo/shared build && pnpm --filter @repo/web dev"
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./apps/web:/app/apps/web
+      - ./packages/shared/src:/app/packages/shared/src
+      - /app/apps/web/node_modules
+      - /app/apps/web/.next
+    depends_on:
+      - api-dev
+    restart: unless-stopped
