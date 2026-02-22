@@ -1,5 +1,3 @@
-import 'dotenv/config';
-
 import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
 import { Logger } from '@nestjs/common';
@@ -21,6 +19,6 @@ export async function testConnection() {
     logger.log('Database connected successfully: ' + JSON.stringify(result));
   } catch (err) {
     logger.error('Database connection failed', err);
-    process.exit(1);
+    throw err;
   }
 }

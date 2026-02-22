@@ -70,6 +70,43 @@ pnpm build
 pnpm lint
 ```
 
+## Docker Runbook
+
+### Profiles
+
+- `dev`: runs `api-dev` and `web-dev` only
+- `prod`: runs `api` and `web` only
+
+### Start Development Stack (Docker)
+
+```bash
+docker compose --profile dev down -v
+docker compose --profile dev up --build
+```
+
+Ports:
+
+- Web dev: `http://localhost:3002`
+- API dev: `http://localhost:3003/health`
+
+### Start Production-like Stack (Docker)
+
+```bash
+docker compose --profile prod down -v
+docker compose --profile prod up --build
+```
+
+Ports:
+
+- Web: `http://localhost:3000`
+- API: `http://localhost:3001/health`
+
+### Health and Troubleshooting
+
+- Run `pnpm doctor` to check `pnpm`, `turbo`, and Compose profile configs.
+- If `turbo: not found`, run `pnpm install --no-frozen-lockfile` to restore workspace tools.
+- If `docker compose config` fails, verify service volume references and profile names in `docker-compose.yml`.
+
 ## License
 
 ISC

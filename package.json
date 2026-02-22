@@ -5,10 +5,15 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "lint": "turbo run lint"
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "doctor": "bash scripts/doctor.sh"
   },
   "devDependencies": {
     "turbo": "^2.7.2"
   },
-  "packageManager": "pnpm@10.24.0"
+  "packageManager": "pnpm@10.24.0",
+  "dependencies": {
+    "dotenv": "^17.2.3"
+  }
 }

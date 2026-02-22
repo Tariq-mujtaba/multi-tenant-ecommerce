@@ -1,20 +1,42 @@
+networks:
+  app-network:
+    driver: bridge
+
 services:
   api:
+    profiles: ["prod"]
     build:
       context: .
       dockerfile: apps/api/Dockerfile
+      target: runner
+    env_file:
+      - ./apps/api/.env
     ports:
       - "3001:3001"
     environment:
       - NODE_ENV=production
       - PORT=3001
-      - DATABASE_URI=${DATABASE_URI}
     restart: unless-stopped
+    networks:
+      - app-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3001/health')",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   web:
+    profiles: ["prod"]
     build:
       context: .
       dockerfile: apps/web/Dockerfile
+      target: runner
     ports:
       - "3000:3000"
     environment:
@@ -22,6 +44,14 @@ services:
     depends_on:
       - api
     restart: unless-stopped
+    networks:
+      - app-network
+    healthcheck:
+      test:
+        ["CMD", "node", "-e", "require('http').get('http://localhost:3000/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # Development services with hot-reload
   api-dev:
@@ -29,17 +59,21 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
-      target: deps
+      target: builder
     command: sh -c "pnpm --filter @repo/shared build && pnpm --filter @repo/api dev"
+    env_file:
+      - ./apps/api/.env
     ports:
-      - "3001:3001"
+      - "3003:3001"
     environment:
       - NODE_ENV=development
       - PORT=3001
-      - DATABASE_URI=${DATABASE_URI}
     volumes:
       - ./apps/api/src:/app/apps/api/src
       - ./packages/shared/src:/app/packages/shared/src
+      - /app/apps/api/node_modules
+    networks:
+      - app-network
     restart: unless-stopped
 
   web-dev:
@@ -47,17 +81,18 @@ services:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
-      target: deps
+      target: builder
     command: sh -c "pnpm --filter @repo/shared build && pnpm --filter @repo/web dev"
     ports:
-      - "3000:3000"
+      - "3002:3000"
     environment:
       - NODE_ENV=development
     volumes:
       - ./apps/web:/app/apps/web
       - ./packages/shared/src:/app/packages/shared/src
       - /app/apps/web/node_modules
-      - /app/apps/web/.next
     depends_on:
       - api-dev
+    networks:
+      - app-network
     restart: unless-stopped

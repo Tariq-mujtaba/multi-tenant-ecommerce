@@ -14,7 +14,9 @@ FROM base AS deps
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/api/package.json ./apps/api/
 COPY packages/shared/package.json ./packages/shared/
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
+    pnpm install --frozen-lockfile
+
 
 # ============================================
 # Builder stage
@@ -23,7 +25,9 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
+
 COPY . .
+
 RUN pnpm --filter @repo/shared build
 RUN pnpm --filter @repo/api build
 
@@ -41,11 +45,14 @@ USER nestjs
 
 # Copy built application
 COPY --from=builder --chown=nestjs:nodejs /app/apps/api/dist ./dist
+COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nestjs:nodejs /app/apps/api/node_modules ./node_modules
-COPY --from=builder --chown=nestjs:nodejs /app/packages/shared/dist ./node_modules/@repo/shared/dist
-COPY --from=builder --chown=nestjs:nodejs /app/packages/shared/package.json ./node_modules/@repo/shared/
+COPY --from=builder --chown=nestjs:nodejs /app/packages/shared ./packages/shared
 
 EXPOSE 3001
 ENV PORT=3001
+
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+ CMD node -e "require('http').get('http://localhost:3001/health')"
 
 CMD ["node", "dist/main.js"]
