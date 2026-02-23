@@ -44,9 +44,9 @@ RUN addgroup --system --gid 1001 nodejs && \
 USER nestjs
 
 # Copy built application
-COPY --from=builder --chown=nestjs:nodejs /app/apps/api/dist ./dist
+COPY --from=builder --chown=nestjs:nodejs /app/apps/api/dist ./apps/api/dist
 COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=nestjs:nodejs /app/apps/api/node_modules ./node_modules
+COPY --from=builder --chown=nestjs:nodejs /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=builder --chown=nestjs:nodejs /app/packages/shared ./packages/shared
 
 EXPOSE 3001
@@ -55,4 +55,4 @@ ENV PORT=3001
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
  CMD node -e "require('http').get('http://localhost:3001/health')"
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "apps/api/dist/main.js"]
