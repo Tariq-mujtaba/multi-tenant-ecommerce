@@ -4,6 +4,7 @@ import { ThemeToggle } from "./theme-toggle"
 import { MobileMenu } from "./mobile-menu"
 import { SearchForm } from "@/components/forms/search-form"
 import { Button } from "@/components/ui/button"
+import { Suspense } from "react"
 
 export function Navbar() {
   return (
@@ -20,7 +21,9 @@ export function Navbar() {
 
           {/* Search */}
           <div className="hidden md:block flex-1 max-w-sm">
-            <SearchForm />
+            <Suspense fallback={<div className="w-full h-10 bg-secondary-background animate-pulse rounded-base" />}>
+              <SearchForm />
+            </Suspense>
           </div>
 
           {/* Desktop nav */}
