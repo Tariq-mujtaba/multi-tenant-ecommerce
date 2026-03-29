@@ -70,4 +70,6 @@ next-env.d.ts
 # md files
 PROJECT.md
 
+# claude
+.claude/
 
