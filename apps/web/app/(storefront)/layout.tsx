@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import CategoriesBar from "@/components/ui/categories-bar";
 
 export default function StorefrontLayout({
   children,
@@ -9,6 +10,7 @@ export default function StorefrontLayout({
   return (
     <>
       <Navbar />
+      <CategoriesBar />
       <main className="min-h-[calc(100vh-4rem)]">{children}</main>
       <Footer />
     </>
