@@ -43,13 +43,14 @@ const CategoryDropDown = ({
           className={cn(
             "font-medium text-base border px-4 py-1 bg-transparent border-transparent rounded-full hover:bg-white hover:border-foreground text-black mb-1.5",
             isActive && !isNavigationHovered && "bg-white border-foreground ",
+            isOpen && "bg-white border-foreground ",
           )}
         >
           {category.displayName}
         </Button>
       </div>
 
-      {category.children.length > 0 && (
+      {category.children?.length > 0 && (
         <div
           className={cn(
             "absolute opacity-0 -bottom-3 w-0 h-0 border-l-12 border-l-transparent border-r-12 border-r-transparent border-b-12 border-b-black left-1/2 -translate-x-1/2",
@@ -58,7 +59,7 @@ const CategoryDropDown = ({
         />
       )}
 
-      {category.children.length > 0 && (
+      {category.children?.length > 0 && (
         <SubcategoryMenu
           category={category}
           isOpen={isOpen}

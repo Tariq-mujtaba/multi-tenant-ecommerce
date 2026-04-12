@@ -6,7 +6,13 @@ async function getCategories(): Promise<Category[]> {
       next: { revalidate: 3600 },
     });
     if (!res.ok) return [];
-    return await res.json();
+    const categories = await res.json();
+
+    const allCategories = [
+      { id: "all", name: "all", displayName: "All", children: [] },
+      ...categories,
+    ];
+    return allCategories;
   } catch {
     return [];
   }
