@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRight, ShoppingBag, Store, Zap } from "lucide-react"
+import { ArrowRight, ShoppingBag } from "lucide-react"
 import { ProductCard } from "@/components/ui/product-card"
 import { Button } from "@/components/ui/button"
 
@@ -61,15 +61,9 @@ const PLACEHOLDER_PRODUCTS = [
   },
 ]
 
-const CATEGORIES = [
-  { label: "Accessories", slug: "accessories", icon: ShoppingBag },
-  { label: "Home & Living", slug: "home-living", icon: Store },
-  { label: "Apparel", slug: "apparel", icon: Zap },
-  { label: "Electronics", slug: "electronics", icon: Zap },
-  { label: "Food & Drink", slug: "food-drink", icon: ShoppingBag },
-]
 
-export default function HomePage() {
+export default async function HomePage() {
+
   return (
     <div className="flex flex-col">
       {/* ------------------------------------------------------------------ */}
@@ -129,24 +123,6 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Category quick-links                                                */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="border-b-2 border-border bg-secondary-background">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-wrap gap-3 items-center">
-            <span className="text-sm font-medium text-foreground/50 mr-2">
-              Browse by:
-            </span>
-            {CATEGORIES.map(({ label, slug }) => (
-              <Button key={slug} asChild variant="neutral">
-                <Link href={`/products?category=${slug}`}>{label}</Link>
-              </Button>
-            ))}
           </div>
         </div>
       </section>
