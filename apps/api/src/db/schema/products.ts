@@ -34,6 +34,7 @@ export const categories = pgTable('category', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull().unique(),
   displayName: text('display_name').notNull(),
+  color: text('color'),
   parentId: uuid('parent_id').references((): any => categories.id, {
     onDelete: 'set null',
   }),
